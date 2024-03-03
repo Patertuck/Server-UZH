@@ -48,13 +48,14 @@ public class UserService {
     newUser.setPassword(userInput.getPassword());
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.OFFLINE);
+    newUser.setCreationDate(java.time.LocalDate.now());
     checkIfUserExists(newUser);
     // saves the given entity but data is only persisted in the database once
     // flush() is called
     newUser = userRepository.save(newUser);
     userRepository.flush();
 
-    log.info("Created Information for User: {}", newUser);
+    log.info("Created Information for User: {}", newUser.getCreationDate());
     return newUser;
   }
 
@@ -88,7 +89,7 @@ public class UserService {
           String.format(baseErrorMessage, "username and the password", "are"));
     } 
 
-    if(Objects.equals(userInput.getPassword(), userByUsername.getPassword())){
+    if(Objects.equals(userInput.getPassword().trim(), userByUsername.getPassword().trim())){
       log.info("Found User");
       return userByUsername;
     }
