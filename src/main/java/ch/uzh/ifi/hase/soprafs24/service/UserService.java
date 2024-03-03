@@ -3,6 +3,8 @@ package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UsernamePasswordDTO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -39,7 +42,10 @@ public class UserService {
     return this.userRepository.findAll();
   }
 
-  public User createUser(User newUser) {
+  public User createUser(UsernamePasswordDTO userInput) {
+    User newUser = new User();
+    newUser.setUsername(userInput.getUsername());
+    newUser.setPassword(userInput.getPassword());
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.OFFLINE);
     checkIfUserExists(newUser);
@@ -48,7 +54,7 @@ public class UserService {
     newUser = userRepository.save(newUser);
     userRepository.flush();
 
-    log.debug("Created Information for User: {}", newUser);
+    log.info("Created Information for User: {}", newUser);
     return newUser;
   }
 
@@ -64,16 +70,32 @@ public class UserService {
    */
   private void checkIfUserExists(User userToBeCreated) {
     User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
-    User userByPassword = userRepository.findByPassword(userToBeCreated.getPassword());
-
     String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
-    if (userByUsername != null && userByPassword != null) {
+    if (userByUsername != null) {
+      //stopps function when this error is thrown
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           String.format(baseErrorMessage, "username and the password", "are"));
-    } else if (userByUsername != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
-    } else if (userByPassword != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "password", "is"));
+    } 
+  }
+  
+  public User checkLoginCorrect(UsernamePasswordDTO userInput) {
+    
+    User userByUsername = userRepository.findByUsername(userInput.getUsername());
+    String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
+    if (userByUsername == null) {
+      log.info("User doesnt exist in database");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+          String.format(baseErrorMessage, "username and the password", "are"));
+    } 
+
+    if(Objects.equals(userInput.getPassword(), userByUsername.getPassword())){
+      log.info("Found User");
+      return userByUsername;
     }
+
+    log.info("No Correct password for user found. Pasword Database: {} Password client: {}", userByUsername.getPassword(), userInput.getPassword());
+    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+          String.format(baseErrorMessage, "username and the password", "are"));
+
   }
 }

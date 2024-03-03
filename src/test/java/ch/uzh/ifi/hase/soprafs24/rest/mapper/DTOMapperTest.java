@@ -2,8 +2,8 @@ package ch.uzh.ifi.hase.soprafs24.rest.mapper;
 
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UserClientVersionDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UsernamePasswordDTO;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,7 +17,7 @@ public class DTOMapperTest {
   @Test
   public void testCreateUser_fromUserPostDTO_toUser_success() {
     // create UserPostDTO
-    UserPostDTO userPostDTO = new UserPostDTO();
+    UsernamePasswordDTO userPostDTO = new UsernamePasswordDTO();
     userPostDTO.setPassword("password");
     userPostDTO.setUsername("username");
 
@@ -39,11 +39,10 @@ public class DTOMapperTest {
     user.setToken("1");
 
     // MAP -> Create UserGetDTO
-    UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+    UserClientVersionDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserClientVersionDTO(user);
 
     // check content
     assertEquals(user.getId(), userGetDTO.getId());
-    assertEquals(user.getPassword(), userGetDTO.getPassword());
     assertEquals(user.getUsername(), userGetDTO.getUsername());
     assertEquals(user.getStatus(), userGetDTO.getStatus());
   }

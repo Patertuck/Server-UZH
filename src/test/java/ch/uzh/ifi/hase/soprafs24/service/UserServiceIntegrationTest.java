@@ -3,6 +3,8 @@ package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UsernamePasswordDTO;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,7 @@ public class UserServiceIntegrationTest {
     // given
     assertNull(userRepository.findByUsername("testUsername"));
 
-    User testUser = new User();
+    UsernamePasswordDTO testUser = new UsernamePasswordDTO();
     testUser.setPassword("testPassword");
     testUser.setUsername("testUsername");
 
@@ -47,7 +49,6 @@ public class UserServiceIntegrationTest {
     User createdUser = userService.createUser(testUser);
 
     // then
-    assertEquals(testUser.getId(), createdUser.getId());
     assertEquals(testUser.getPassword(), createdUser.getPassword());
     assertEquals(testUser.getUsername(), createdUser.getUsername());
     assertNotNull(createdUser.getToken());
@@ -58,15 +59,13 @@ public class UserServiceIntegrationTest {
   public void createUser_duplicateUsername_throwsException() {
     assertNull(userRepository.findByUsername("testUsername"));
 
-    User testUser = new User();
+    UsernamePasswordDTO testUser = new UsernamePasswordDTO();
     testUser.setPassword("testPassword");
     testUser.setUsername("testUsername");
-    User createdUser = userService.createUser(testUser);
+    userService.createUser(testUser);
 
     // attempt to create second user with same username
-    User testUser2 = new User();
-
-    // change the name but forget about the username
+    UsernamePasswordDTO testUser2 = new UsernamePasswordDTO();
     testUser2.setPassword("testPassword2");
     testUser2.setUsername("testUsername");
 
