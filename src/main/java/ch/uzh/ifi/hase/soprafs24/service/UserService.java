@@ -99,4 +99,17 @@ public class UserService {
           String.format(baseErrorMessage, "username and the password", "are"));
 
   }
+
+  public User fetchUserFromToken(String token){
+    try {
+      log.info("Attempting to fetch user for token: '{}'", token);
+      User user = userRepository.findByToken(token);
+      log.info("User found: '{}'", user);
+      return user;
+  } catch (Exception e) {
+      log.error("Error fetching user from token: '{}'", token, e);
+      // Handle the exception or rethrow it based on your requirements
+      return null;
+    }
+  }
 }

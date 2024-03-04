@@ -66,7 +66,7 @@ public class UserController {
   }
 
   @PostMapping("/usersLogin")
-  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public UserClientVersionDTO loginUser(@RequestBody UsernamePasswordDTO userPostDTO) {
     // convert API user to internal representation
@@ -77,5 +77,22 @@ public class UserController {
 
     // convert internal representation of user back to API
     return DTOMapper.INSTANCE.convertEntityToUserClientVersionDTO(checkDatabaseUser);
+  }
+
+  @PostMapping("/fetchByToken")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public UserClientVersionDTO fetchByToken(@RequestBody String token) {
+    // convert API user to internal representation
+    // User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+    token = token.trim().replaceAll("^\"|\"$", "");
+    log.info("Received token from client: {}", token);
+    User userFromToken = userService.fetchUserFromToken(token);
+    log.info("User found: {}", userFromToken.getUsername());
+    log.info("User password: {}", userFromToken.getPassword());
+
+    UserClientVersionDTO x = DTOMapper.INSTANCE.convertEntityToUserClientVersionDTO(userFromToken);
+    log.info("Converted boy: {}", x);
+    return x;
   }
 }
