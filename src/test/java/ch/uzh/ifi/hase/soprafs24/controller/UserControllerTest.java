@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Date;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,8 +49,9 @@ public class UserControllerTest {
     // given
     User user = new User();
     user.setPassword("Firstname Lastname");
-    user.setUsername("firstname@lastname");
+    user.setUsername("firstname lastname");
     user.setStatus(UserStatus.OFFLINE);
+    user.setCreationDate(new Date(1));
 
     List<User> allUsers = Collections.singletonList(user);
 
@@ -63,7 +65,6 @@ public class UserControllerTest {
     // then
     mockMvc.perform(getRequest).andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(1)))
-        .andExpect(jsonPath("$[0].password", is(user.getPassword())))
         .andExpect(jsonPath("$[0].username", is(user.getUsername())))
         .andExpect(jsonPath("$[0].status", is(user.getStatus().toString())));
   }
@@ -72,11 +73,11 @@ public class UserControllerTest {
   public void createUser_validInput_userCreated() throws Exception {
     // given
     User user = new User();
-    user.setId(1L);
-    user.setPassword("Test User");
-    user.setUsername("testUsername");
+    user.setPassword("123");
+    user.setUsername("FirstName LastName");
     user.setToken("1");
-    user.setStatus(UserStatus.ONLINE);
+    user.setStatus(UserStatus.OFFLINE);
+    user.setCreationDate(new Date(1));
 
     UsernamePasswordDTO userPostDTO = new UsernamePasswordDTO();
     userPostDTO.setPassword("Test User");
@@ -92,8 +93,7 @@ public class UserControllerTest {
     // then
     mockMvc.perform(postRequest)
         .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.id", is(user.getId().intValue())))
-        .andExpect(jsonPath("$.password", is(user.getPassword())))
+        .andExpect(jsonPath("$.id", is(user.getId())))
         .andExpect(jsonPath("$.username", is(user.getUsername())))
         .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
   }

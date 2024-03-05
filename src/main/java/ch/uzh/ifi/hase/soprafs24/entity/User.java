@@ -4,7 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.sql.Date;
 
 /**
  * Internal User Representation
@@ -39,7 +39,7 @@ public class User implements Serializable {
   private UserStatus status;
 
   @Column(nullable = false)
-  private LocalDate creationDate;
+  private Date creationDate;
 
   public Long getId() {
     return id;
@@ -81,11 +81,11 @@ public class User implements Serializable {
     this.status = status;
   }
 
-  public LocalDate getCreationDate() {
+  public Date getCreationDate() {
     return creationDate;
   }
 
-  public void setCreationDate(LocalDate creationDate) {
+  public void setCreationDate(Date creationDate) {
     this.creationDate = creationDate;
   }
 }
