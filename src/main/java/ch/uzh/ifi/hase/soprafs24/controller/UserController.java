@@ -115,4 +115,11 @@ public class UserController {
     log.info("Converted boy: {}", x);
     return x;
   }
+
+  @PostMapping("/setUserOffline")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public void turnUserByUsernameOffline(@RequestBody String username) {
+    userService.fetchUserFromUsername(username);
+  }
 }

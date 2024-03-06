@@ -116,6 +116,13 @@ public class UserService {
     }
   }
 
+  public void fetchUserFromUsername(String username){
+    User user = userRepository.findByUsername(username);
+    user.setStatus(UserStatus.OFFLINE);
+    user = userRepository.save(user);
+    userRepository.flush();
+  }
+
   public User fetchUserFromToken(String token){
     try {
       log.info("Attempting to fetch user for token: '{}'", token);
