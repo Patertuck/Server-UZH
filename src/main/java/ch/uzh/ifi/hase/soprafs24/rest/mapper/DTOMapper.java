@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.rest.mapper;
 
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserClientVersionDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UserToDisplayClientVersionDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UsernamePasswordDTO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -31,4 +32,11 @@ public interface DTOMapper {
   @Mapping(source = "status", target = "status")
   @Mapping(source = "token", target = "token")
   UserClientVersionDTO convertEntityToUserClientVersionDTO(User user);
+
+  @Mapping(source = "id", target = "id")
+  @Mapping(source = "username", target = "username")
+  @Mapping(source = "status", target = "status")
+  @Mapping(source = "creationDate", target = "creationDate")
+  @Mapping(source = "birthDate", target = "birthDate")
+  UserToDisplayClientVersionDTO convertEntitytoUserToDisplayClientVersionDTO(User user);
 }

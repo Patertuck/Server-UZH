@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UserToDisplayClientVersionDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UsernamePasswordDTO;
 
 import org.slf4j.Logger;
@@ -48,8 +49,9 @@ public class UserService {
     newUser.setUsername(userInput.getUsername());
     newUser.setPassword(userInput.getPassword());
     newUser.setToken(UUID.randomUUID().toString());
-    newUser.setStatus(UserStatus.OFFLINE);
+    newUser.setStatus(UserStatus.ONLINE);
     newUser.setCreationDate(new Date(System.currentTimeMillis()));
+    newUser.setBirthDate(null);
     checkIfUserExists(newUser);
     // saves the given entity but data is only persisted in the database once
     // flush() is called
@@ -99,6 +101,19 @@ public class UserService {
     throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           String.format(baseErrorMessage, "username and the password", "are"));
 
+  }
+
+  public User findUserToDisplayById(long id){
+    try {
+      log.info("Attempting to fetch user from Id: '{}'", id);
+      User user = userRepository.findById(id);
+      log.info("User found: '{}'", user);
+      return user;
+  } catch (Exception e) {
+      log.error("Error fetching user from Id: '{}'", id, e);
+      // Handle the exception or rethrow it based on your requirements
+      return null;
+    }
   }
 
   public User fetchUserFromToken(String token){

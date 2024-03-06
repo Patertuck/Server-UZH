@@ -1,7 +1,9 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
+import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserClientVersionDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UserToDisplayClientVersionDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UsernamePasswordDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
@@ -37,7 +39,7 @@ public class UserController {
   public List<UserClientVersionDTO> getAllUsers() {
     // fetch all users in the internal representation
     List<User> users = userService.getUsers();
-    List<UserClientVersionDTO> userGetDTOs = new ArrayList<>();
+    List<UserClientVersionDTO> userGetDTOs = new ArrayList<>(); 
 
     // convert each user to the API representation
     for (User user : users) {
@@ -65,6 +67,23 @@ public class UserController {
     return DTOMapper.INSTANCE.convertEntityToUserClientVersionDTO(createdUser);
   }
 
+  @GetMapping(value = "/users/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public UserToDisplayClientVersionDTO returnUserToDisplay(@PathVariable  long id) {
+    // convert API user to internal representation
+    // User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+
+    // create user
+    log.info("Received User Request from client");
+    log.info(String.valueOf(id));
+    
+    User userFromId = userService.findUserToDisplayById(id);
+    log.info("User found: {}", userFromId.getUsername());
+    // convert internal representation of user back to API
+    return DTOMapper.INSTANCE.convertEntitytoUserToDisplayClientVersionDTO(userFromId);
+  }
+
   @PostMapping("/usersLogin")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
@@ -74,6 +93,7 @@ public class UserController {
 
     log.info("Received Login Request form client");
     User checkDatabaseUser = userService.checkLoginCorrect(userPostDTO);
+    checkDatabaseUser.setStatus(UserStatus.ONLINE);
 
     // convert internal representation of user back to API
     return DTOMapper.INSTANCE.convertEntityToUserClientVersionDTO(checkDatabaseUser);

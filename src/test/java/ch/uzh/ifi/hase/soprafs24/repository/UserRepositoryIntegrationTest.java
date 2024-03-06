@@ -30,6 +30,7 @@ public class UserRepositoryIntegrationTest {
     user.setStatus(UserStatus.OFFLINE);
     user.setToken("1");
     user.setCreationDate(new Date(1));
+    user.setBirthDate(new Date(1));
 
     entityManager.persist(user);
     entityManager.flush();

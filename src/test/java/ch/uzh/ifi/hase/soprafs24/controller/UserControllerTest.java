@@ -52,6 +52,7 @@ public class UserControllerTest {
     user.setUsername("firstname lastname");
     user.setStatus(UserStatus.OFFLINE);
     user.setCreationDate(new Date(1));
+    user.setBirthDate(null);
 
     List<User> allUsers = Collections.singletonList(user);
 
@@ -78,6 +79,7 @@ public class UserControllerTest {
     user.setToken("1");
     user.setStatus(UserStatus.OFFLINE);
     user.setCreationDate(new Date(1));
+    user.setBirthDate(null);
 
     UsernamePasswordDTO userPostDTO = new UsernamePasswordDTO();
     userPostDTO.setPassword("Test User");

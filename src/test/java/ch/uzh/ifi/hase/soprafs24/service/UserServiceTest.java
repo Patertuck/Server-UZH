@@ -38,7 +38,7 @@ public class UserServiceTest {
     testUser.setPassword("testPassword");
     testUser.setUsername("testUsername");
     testUser.setToken("1");
-    testUser.setStatus(UserStatus.OFFLINE);
+    testUser.setStatus(UserStatus.ONLINE);
     testUser.setCreationDate(new Date(1));
     
 
@@ -63,7 +63,7 @@ public class UserServiceTest {
     assertEquals(testUser.getPassword(), createdUser.getPassword());
     assertEquals(testUser.getUsername(), createdUser.getUsername());
     assertNotNull(createdUser.getToken());
-    assertEquals(UserStatus.OFFLINE, createdUser.getStatus());
+    assertEquals(UserStatus.ONLINE, createdUser.getStatus());
   }
 
   @Test
