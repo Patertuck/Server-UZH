@@ -2,18 +2,18 @@ package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
 public class UsernameBirthDateDTO {
 
-  private String birthDate; 
+  private String inputBirthDate = null; 
 
-  private String inputUsername;
+  private String inputUsername = null;
 
   private String currentUsername;
 
-  public String getBirthDate() {
-    return birthDate;
+  public String getInputBirthDate() {
+    return inputBirthDate;
   }
 
-  public void setBirthDate(String birthDate) {
-    this.birthDate = birthDate;
+  public void setInputBirthDate(String inputBirthDate) {
+    this.inputBirthDate = inputBirthDate;
   }
 
   public String getInputUsername() {

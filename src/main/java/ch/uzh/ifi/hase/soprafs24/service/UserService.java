@@ -118,7 +118,7 @@ public class UserService {
   }
 
   public void fetchUserFromUsername(String username){
-    User user = userRepository.findByUsername(username);
+    User user = userRepository.findByUsername(username.trim().replaceAll("^\"|\"$", ""));
     user.setStatus(UserStatus.OFFLINE);
     user = userRepository.save(user);
     userRepository.flush();
@@ -127,7 +127,7 @@ public class UserService {
   public User fetchUserFromToken(String token){
     try {
       log.info("Attempting to fetch user for token: '{}'", token);
-      User user = userRepository.findByToken(token);
+      User user = userRepository.findByToken(token.trim());
       log.info("User found: '{}'", user);
       return user;
   } catch (Exception e) {
@@ -138,6 +138,19 @@ public class UserService {
   }
 
   public void saveUserNameBirthDate(UsernameBirthDateDTO input){
-    
+    User updatedUser = userRepository.findByUsername(input.getCurrentUsername());
+    if (input.getInputUsername() != null){
+      log.info("Updating username!");
+      updatedUser.setUsername(input.getInputUsername());
+     }
+     
+     if (input.getInputBirthDate() != null){
+       Date date = Date.valueOf(input.getInputBirthDate());
+       log.info("Updating BirthDate: {}", date);
+      updatedUser.setBirthDate(date);
+     }
+
+    updatedUser = userRepository.save(updatedUser);
+    userRepository.flush();
   }
 }
