@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,14 +121,19 @@ public class UserController {
   @PostMapping("/setUserOffline")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @ResponseBody
-  public void SaveUserNameBirthDate(@RequestBody String username) {
+  public void turnUserByUsernameOffline(@RequestBody String username) {
+    log.info(username);
     userService.fetchUserFromUsername(username);
   }
 
   @PutMapping("/users")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public void turnUserByUsernameOffline(@RequestBody UsernameBirthDateDTO input) {
+  public void SaveUserNameBirthDate(@RequestBody UsernameBirthDateDTO input) {
+    log.info("Saving input username: {}", input.getInputUsername());
+    log.info("Saving input old username: {}", input.getCurrentUsername());
+    log.info("Saving input BirthDate: {}", input.getInputBirthDate());
+    
     userService.saveUserNameBirthDate(input);
   }
 }
