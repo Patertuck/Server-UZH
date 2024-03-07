@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserToDisplayClientVersionDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UsernameBirthDateDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UsernamePasswordDTO;
 
 import org.slf4j.Logger;
@@ -134,5 +135,9 @@ public class UserService {
       // Handle the exception or rethrow it based on your requirements
       return null;
     }
+  }
+
+  public void saveUserNameBirthDate(UsernameBirthDateDTO input){
+    
   }
 }

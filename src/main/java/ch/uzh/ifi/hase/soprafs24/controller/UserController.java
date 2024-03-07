@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserClientVersionDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserToDisplayClientVersionDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UsernameBirthDateDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UsernamePasswordDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
@@ -117,9 +118,16 @@ public class UserController {
   }
 
   @PostMapping("/setUserOffline")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @ResponseBody
+  public void SaveUserNameBirthDate(@RequestBody String username) {
+    userService.fetchUserFromUsername(username);
+  }
+
+  @PutMapping("/users")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public void turnUserByUsernameOffline(@RequestBody String username) {
-    userService.fetchUserFromUsername(username);
+  public void turnUserByUsernameOffline(@RequestBody UsernameBirthDateDTO input) {
+    userService.saveUserNameBirthDate(input);
   }
 }
