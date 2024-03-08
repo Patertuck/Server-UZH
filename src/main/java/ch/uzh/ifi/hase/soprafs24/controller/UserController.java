@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,14 +125,14 @@ public class UserController {
     userService.fetchUserFromUsername(username);
   }
 
-  @PutMapping("/users")
+  @PutMapping(value = "/users/{id}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public void SaveUserNameBirthDate(@RequestBody UsernameBirthDateDTO input) {
-    log.info("Saving input username: {}", input.getInputUsername());
-    log.info("Saving input old username: {}", input.getCurrentUsername());
-    log.info("Saving input BirthDate: {}", input.getInputBirthDate());
+  public void SaveUserNameBirthDate(@RequestBody UsernameBirthDateDTO inputUser, @PathVariable  long id) {
+    log.info("Saving input username: {}", inputUser.getInputUsername());
+    log.info("Saving input old username: {}", inputUser.getCurrentUsername());
+    log.info("Saving input BirthDate: {}", inputUser.getInputBirthDate());
     
-    userService.saveUserNameBirthDate(input);
+    userService.saveUserNameBirthDate(inputUser, id);
   }
 }

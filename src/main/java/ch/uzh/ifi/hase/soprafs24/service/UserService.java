@@ -137,8 +137,8 @@ public class UserService {
     }
   }
 
-  public void saveUserNameBirthDate(UsernameBirthDateDTO input){
-    User updatedUser = userRepository.findByUsername(input.getCurrentUsername());
+  public void saveUserNameBirthDate(UsernameBirthDateDTO input, long id){
+    User updatedUser = userRepository.findById(id);
     if (input.getInputUsername() != null){
       log.info("Updating username!");
       updatedUser.setUsername(input.getInputUsername());
