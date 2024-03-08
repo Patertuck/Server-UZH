@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UsernameBirthDateDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UsernamePasswordDTO;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,8 +25,10 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -99,6 +102,56 @@ public class UserControllerTest {
         .andExpect(jsonPath("$.username", is(user.getUsername())))
         .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
   }
+
+  @Test
+  public void givenId_whenGetUsers_thenReturnJsonArray() throws Exception {
+    // given
+    User user = new User();
+    user.setPassword("Firstname Lastname");
+    user.setUsername("firstname lastname");
+    user.setStatus(UserStatus.OFFLINE);
+    user.setCreationDate(new Date(1));
+    user.setBirthDate(null);
+
+    // this mocks the UserService -> we define above what the userService should
+    // return when getUsers() is called
+    given(userService.findUserToDisplayById(Mockito.anyLong())).willReturn(user);
+
+    // when
+    MockHttpServletRequestBuilder getRequest = get("/users/1");
+
+    // then
+    mockMvc.perform(getRequest).andExpect(status().isOk())
+    .andExpect(status().isOk())
+    .andExpect(jsonPath("$.id", is(user.getId())))
+    .andExpect(jsonPath("$.username", is(user.getUsername())))
+    .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
+  }
+
+  @Test
+  public void givenId_whenPutUsers_thenReturnJsonArray() throws Exception {
+      // given
+      User user = new User();
+      user.setId(1L);
+      user.setPassword("Firstname Lastname");
+      user.setUsername("firstname lastname");
+      user.setStatus(UserStatus.OFFLINE);
+      user.setCreationDate(new Date(1));
+      user.setBirthDate(null);
+
+      // Mocking the UserService to define what it should return when saveUserNameBirthDate is called
+       doNothing().when(userService).saveUserNameBirthDate(Mockito.any(), Mockito.anyLong());
+
+      // when
+      MockHttpServletRequestBuilder putRequest = put("/users/1")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content("{\"inputUsername\":\"newUsername\", \"inputBirthDate\":\"2000-01-01\", \"currentUsername\":\"currentUsername\"}");
+
+      // then
+      mockMvc.perform(putRequest)
+              .andExpect(status().isNoContent());
+  }
+
 
   /**
    * Helper Method to convert userPostDTO into a JSON string such that the input
