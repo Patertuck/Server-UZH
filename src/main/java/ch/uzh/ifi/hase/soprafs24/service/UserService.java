@@ -75,11 +75,9 @@ public class UserService {
    */
   private void checkIfUserExists(User userToBeCreated) {
     User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
-    String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
     if (userByUsername != null) {
       //stopps function when this error is thrown
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          String.format(baseErrorMessage, "username and the password", "are"));
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "add User failed because username already exists");
     } 
   }
   
@@ -112,8 +110,7 @@ public class UserService {
       return user;
   } catch (Exception e) {
       log.error("Error fetching user from Id: '{}'", id, e);
-      // Handle the exception or rethrow it based on your requirements
-      return null;
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user with userId was not found");
     }
   }
 
@@ -138,19 +135,25 @@ public class UserService {
   }
 
   public void saveUserNameBirthDate(UsernameBirthDateDTO input, long id){
-    User updatedUser = userRepository.findById(id);
-    if (input.getInputUsername() != null){
-      log.info("Updating username!");
-      updatedUser.setUsername(input.getInputUsername());
-     }
-     
-     if (input.getInputBirthDate() != null){
-       Date date = Date.valueOf(input.getInputBirthDate());
-       log.info("Updating BirthDate: {}", date);
-      updatedUser.setBirthDate(date);
-     }
-
-    updatedUser = userRepository.save(updatedUser);
-    userRepository.flush();
+    try {
+      User updatedUser = userRepository.findById(id);
+      
+      if (input.getInputUsername() != null){
+        log.info("Updating username!");
+        updatedUser.setUsername(input.getInputUsername());
+      }
+      
+      if (input.getInputBirthDate() != null){
+        Date date = Date.valueOf(input.getInputBirthDate());
+        log.info("Updating BirthDate: {}", date);
+        updatedUser.setBirthDate(date);
+      }
+      
+      updatedUser = userRepository.save(updatedUser);
+      userRepository.flush();
+    } catch (Exception e) {
+      log.error("Error fetching user from Id: '{}'", id, e);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user with userId was not found");
+    }
   }
 }

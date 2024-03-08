@@ -53,8 +53,6 @@ public class UserController {
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
   public UserClientVersionDTO registrateUser(@RequestBody UsernamePasswordDTO userPostDTO) {
-    // convert API user to internal representation
-    // User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
     // create user
     log.info("Received Registration Request form client");
@@ -72,9 +70,6 @@ public class UserController {
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public UserToDisplayClientVersionDTO returnUserToDisplay(@PathVariable  long id) {
-    // convert API user to internal representation
-    // User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-
     // create user
     log.info("Received User Request from client");
     log.info(String.valueOf(id));
@@ -126,7 +121,7 @@ public class UserController {
   }
 
   @PutMapping(value = "/users/{id}")
-  @ResponseStatus(HttpStatus.OK)
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   @ResponseBody
   public void SaveUserNameBirthDate(@RequestBody UsernameBirthDateDTO inputUser, @PathVariable  long id) {
     log.info("Saving input username: {}", inputUser.getInputUsername());
